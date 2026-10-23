@@ -1,6 +1,6 @@
 {
   "name": "open-house",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Browser-only harness: phone photos of a home -> walkable three.js tour + photoreal edits. The harness is plumbing; the injected model makes every judgment.",
   "type": "module",
   "private": true,
@@ -8,7 +8,9 @@
     "test": "node --test 'test/*.test.js'",
     "demo": "node tools/serve.mjs",
     "e2e": "node tools/e2e-demo.mjs",
-    "fixtures": "node tools/render-fixtures.mjs"
+    "fixtures": "node tools/render-fixtures.mjs",
+    "shoot": "node tools/shoot.mjs",
+    "bundle-addons": "node tools/bundle-addons.mjs"
   },
   "engines": {
     "node": ">=22"

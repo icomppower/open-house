@@ -1,11 +1,23 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "open-house/layout",
-  "title": "layout.json — rooms as rectangles in metres, levels, openings, cameras",
+  "title": "layout.json — rooms as rectangles in metres, levels, openings, cameras, furniture from the catalog",
   "type": "object",
   "additionalProperties": false,
-  "required": ["units", "footprint", "levels", "rooms", "openings", "adjacency", "cameras"],
+  "required": ["units", "footprint", "levels", "rooms", "openings", "adjacency", "cameras", "furniture", "environment"],
   "$defs": {
+    "material": {
+      "type": "string",
+      "enum": ["walnut", "white_oak", "terrazzo", "board_concrete", "marble_viola", "marble_white", "plaster", "limestone", "redwood_deck", "tile_white", "carpet_wool", "painted_brick", "cladding_dark"]
+    },
+    "furnitureKey": {
+      "type": "string",
+      "enum": ["sofa_l", "sofa_straight", "lounge_chair", "ottoman", "coffee_table_plinth", "dining_table", "dining_chair", "island_waterfall", "counter_run", "bar_stool", "bed_king", "bed_queen", "nightstand", "bench", "credenza", "bookshelf_wall", "fireplace_concrete", "tub_freestanding", "vanity_double", "desk", "rug", "plant_tree", "plant_small", "pendant_globe", "floor_lamp", "table_lamp"]
+    },
+    "environment": {
+      "type": "string",
+      "enum": ["bay_view", "city_view", "garden", "forest", "neutral_sky"]
+    },
     "vec3": {
       "type": "object",
       "additionalProperties": false,
@@ -59,12 +71,31 @@
           "name": { "type": "string", "minLength": 1, "maxLength": 60 },
           "level": { "type": "string" },
           "rect": { "$ref": "#/$defs/rect" },
-          "floor": { "type": "string" },
-          "walls": { "type": "string" },
+          "floor": { "$ref": "#/$defs/material" },
+          "walls": { "$ref": "#/$defs/material" },
+          "ceiling": { "$ref": "#/$defs/material" },
           "ceilingHeight": { "type": "number", "minimum": 2, "maximum": 6 }
         }
       }
     },
+    "furniture": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "room", "item", "x", "z", "rotation"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "room": { "type": "string" },
+          "item": { "$ref": "#/$defs/furnitureKey" },
+          "x": { "type": "number" },
+          "z": { "type": "number" },
+          "rotation": { "type": "number", "minimum": 0, "maximum": 360 },
+          "material": { "$ref": "#/$defs/material" }
+        }
+      }
+    },
+    "environment": { "$ref": "#/$defs/environment" },
     "openings": {
       "type": "array",
       "items": {

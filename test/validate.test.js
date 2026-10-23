@@ -63,14 +63,14 @@ test('layout: every camera must be inside its room and match the photo map', asy
   has(checkLayout(layout5, spec), 'photo "p6" has 0 cameras');
 });
 
-test('layout: material names must be consistent with the spec', async () => {
+test('layout: material names must be catalog keys (v1.1: catalog replaces spec.materials)', async () => {
   const spec = await fixture('spec');
   const layout = clone(await fixture('layout'));
   layout.rooms[0].floor = 'oak';
   layout.rooms[2].walls = 'paint';
   const e = checkLayout(layout, spec);
-  has(e, 'floor material "oak" is not in spec.materials');
-  has(e, 'wall material "paint" is not in spec.materials');
+  has(e, 'floor material "oak" is not a catalog key; valid keys: walnut, white_oak');
+  has(e, 'wall material "paint" is not a catalog key; valid keys: walnut, white_oak');
 });
 
 test('layout: openings must sit on shared walls, exterior openings must face outside', async () => {

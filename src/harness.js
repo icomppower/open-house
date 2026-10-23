@@ -3,6 +3,7 @@
 // judgment comes from the injected callModel / callImage.
 
 import { validateSchema, formatErrors } from './validate.js';
+import { appendTrace, hashOutput, findRedoOf, modelInputSummary, imageInputSummary, now } from './trace.js';
 import * as prepare from './steps/prepare.js';
 import * as ingest from './steps/ingest.js';
 import * as layout from './steps/layout.js';
@@ -10,7 +11,8 @@ import * as enhance from './steps/enhance.js';
 import * as judge from './steps/judge.js';
 import * as narrate from './steps/narrate.js';
 
-export const VERSION = 1;
+export const VERSION = 1; // state format; v1 states resume under v1.1 (trace is additive)
+export const RELEASE = '1.1.0';
 export const TEXT_RULE =
   'TEXT RULE: no readable text, logos, brand names, book titles, album art with words or faces, or real names anywhere in the image.';
 
@@ -137,6 +139,7 @@ export async function createState({ photos }) {
     steps: Object.fromEntries(STEPS.map((s) => [s, { status: 'pending' }])),
     archive: [],
     log: [],
+    trace: [], // one entry per model/image call, append-only (src/trace.js)
   };
   deepFreeze(state.inputs);
   return state;
@@ -159,6 +162,7 @@ function prepareResume(resume, fromStep) {
   const state = clone(resume);
   state.archive ||= [];
   state.log ||= [];
+  state.trace ||= []; // kept as-is: resume appends, never rewrites
   state.steps ||= {};
   for (const s of STEPS) state.steps[s] ||= { status: 'pending' };
   deepFreeze(state.inputs);
@@ -190,20 +194,28 @@ function prepareResume(resume, fromStep) {
 
 const RETRY_HEADER = 'YOUR PREVIOUS ANSWER WAS REJECTED BY THE VALIDATOR. Fix every error below and answer again with JSON only:';
 
-async function modelJSON(ctx, { step, system, prompt, images = [], schemaName, check, meta = {} }) {
+async function modelJSON(ctx, { step, system, prompt, images = [], schemaName, promptName = schemaName, check, meta = {} }) {
   const schema = await ctx.schema(schemaName);
   const attempts = [];
   let errorsText = '';
   const total = 1 + ctx.options.maxRetries;
+  const promptFile = promptName ? `${promptName}.md` : null;
+  const photoId = meta.photoId ?? null;
+  const redoOf = meta.redo ? findRedoOf(ctx.state.trace, { kind: 'model', step, photoId, promptFile }) : null;
   for (let attempt = 1; attempt <= total; attempt++) {
     const fullPrompt = errorsText ? `${prompt}\n\n${RETRY_HEADER}\n${errorsText}` : prompt;
+    const startedAt = new Date().toISOString();
+    const t0 = now();
     let out;
+    let raw;
     let errors = [];
     try {
       out = await ctx.callModel({ system, prompt: fullPrompt, images, json: true, meta: { ...meta, step, attempt } });
+      raw = out;
     } catch (e) {
       errors = [{ path: '$', message: `model call failed: ${e && e.message ? e.message : e}` }];
     }
+    const ms = now() - t0;
     if (!errors.length && typeof out === 'string') {
       try { out = JSON.parse(stripFences(out)); } catch (e) { errors = [{ path: '$', message: `response is not valid JSON: ${e.message}` }]; }
     }
@@ -212,11 +224,46 @@ async function modelJSON(ctx, { step, system, prompt, images = [], schemaName, c
     if (!errors.length && check) errors = check(out);
     const formatted = formatErrors(errors);
     attempts.push({ attempt, errors: formatted });
+    appendTrace(ctx.state, {
+      step, photoId, attempt, startedAt, ms, kind: 'model', promptFile,
+      inputSummary: modelInputSummary({ step, photoId, images, system, prompt: fullPrompt, attempt, meta }),
+      outputHash: await hashOutput(raw),
+      validator: errors.length ? formatted : 'pass',
+      judgeScore: step === 'judge' && !errors.length && Number.isFinite(out.overall) ? out.overall : null,
+      redoOf,
+    });
     if (!errors.length) return { data: out, attempts: attempt };
     if (attempt < total) ctx.progress({ type: 'retry', step, attempt, of: total, errors: formatted, ...meta });
     errorsText = formatted.map((e) => `- ${e}`).join('\n');
   }
   throw new HarnessError(`${step}: model output failed validation after ${total} attempts`, { step, attempts, ...meta });
+}
+
+// Every callImage goes through here so the trace sees it (including failures).
+async function tracedImage(ctx, { image, prompt, meta = {}, promptFile = 'enhance.md' }) {
+  const step = meta.step || 'enhance';
+  const photoId = meta.photoId ?? null;
+  const redoOf = meta.redo ? findRedoOf(ctx.state.trace, { kind: 'image', step, photoId, promptFile }) : null;
+  const startedAt = new Date().toISOString();
+  const t0 = now();
+  let blob;
+  let error = null;
+  try {
+    blob = await ctx.callImage({ image, prompt, meta: { ...meta, step } });
+    if (!blob || typeof blob.arrayBuffer !== 'function') { error = `callImage for ${photoId} did not return a Blob`; blob = undefined; }
+  } catch (e) {
+    error = `image call failed: ${e && e.message ? e.message : e}`;
+  }
+  appendTrace(ctx.state, {
+    step, photoId, attempt: meta.attempt ?? 1, startedAt, ms: now() - t0, kind: 'image', promptFile,
+    inputSummary: imageInputSummary({ step, photoId, image, prompt, meta }),
+    outputHash: await hashOutput(blob),
+    validator: error ? [`$: ${error}`] : 'pass',
+    judgeScore: null,
+    redoOf,
+  });
+  if (error) throw new HarnessError(error, { step, photoId, kind: 'image' });
+  return blob;
 }
 
 const stripFences = (s) => s.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
@@ -246,8 +293,9 @@ export async function runHarness(opts = {}) {
   const ctx = {
     state,
     options,
-    callModel,
-    callImage,
+    callModel, // raw; steps call ctx.modelJSON so every attempt is validated and traced
+    callImage, // raw; steps call ctx.image so every call is traced
+    image: (args) => tracedImage(ctx, args),
     captureStops,
     tts,
     progress,

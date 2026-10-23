@@ -23,6 +23,7 @@ export async function run(ctx) {
     prompt: ctx.fill(tpl.user, vars),
     images: prepared.photos.map((p) => p.image),
     schemaName: 'spec',
+    promptName: 'ingest',
     check: (spec) => checkSpec(spec, photoIds),
   });
   ctx.state.steps[name].attempts = attempts;

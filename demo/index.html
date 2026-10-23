@@ -71,7 +71,7 @@
   </section>
 
   <section class="card hidden" id="tour">
-    <h2>3 · Tour <small>drag to look · Photoreal shows the enhanced photo at each stop</small></h2>
+    <h2>3 · Tour <small>drag to look · Photoreal shows the enhanced photo at each stop · add <code>?q=low</code> to the URL on a slow phone</small></h2>
     <div id="viewer"></div>
   </section>
 
@@ -86,10 +86,18 @@
     <ul class="narr" id="narr-lines"></ul>
   </section>
 
+  <section class="card hidden" id="made">
+    <h2>6 · How it was made <small id="made-summary"></small></h2>
+    <p style="color:var(--dim);font-size:13px;margin:0 0 8px">Every number here is recounted from <code>state.trace</code> (one entry per model/image call, failed attempts included) and the judge output. No model-written summary is quoted. The same numbers sit behind the viewer's <b>How it was made</b> button.</p>
+    <pre class="log" id="report-md" style="max-height:320px"></pre>
+  </section>
+
   <section class="card hidden" id="actions">
-    <h2>6 · Export &amp; resume</h2>
+    <h2>7 · Export &amp; resume</h2>
     <div class="row">
       <button id="btn-export">Download tour (one HTML file)</button>
+      <button id="btn-trace">Download trace.json</button>
+      <button id="btn-report">Download report.md</button>
       <button id="btn-state">Download run state (JSON)</button>
       <select id="resume-step"><option value="enhance">enhance</option><option value="judge" selected>judge</option><option value="narrate">narrate</option></select>
       <button id="btn-resume">Resume from step</button>

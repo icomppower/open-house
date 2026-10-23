@@ -1,7 +1,8 @@
 // Demo wiring: upload -> runHarness (mock model) -> tour + judge report + export + resume.
 import { runHarness, STEPS, finalImageFor } from '../src/harness.js';
 import { createViewer } from '../src/viewer/viewer.js';
-import { downloadTour } from '../src/export.js';
+import { downloadTour, downloadTrace, downloadReport } from '../src/export.js';
+import { buildReport, reportMarkdown } from '../src/report.js';
 import { createMockCallers, loadSamplePhotos } from '../fixtures/mock.js';
 
 const $ = (id) => document.getElementById(id);
@@ -68,9 +69,10 @@ function resetUi() {
   events.length = 0;
   $('log').textContent = '';
   $('steps').innerHTML = STEPS.map((s) => `<span class="step" data-step="${s}">${s}</span>`).join('');
-  ['tour', 'judge', 'narration', 'actions'].forEach((id) => show(id, false));
+  ['tour', 'judge', 'narration', 'made', 'actions'].forEach((id) => show(id, false));
   if (viewer) { viewer.dispose(); viewer = null; }
   $('report').innerHTML = '';
+  $('report-md').textContent = '';
 }
 function setStep(name, status) {
   const el = document.querySelector(`.step[data-step="${name}"]`);
@@ -97,8 +99,19 @@ function onProgress(ev, st) {
 function afterStep(step, st) {
   if (step === 'layout') mountViewer(st);
   if (step === 'enhance' && viewer) viewer.setImages(imagesFor(st));
-  if (step === 'judge') { if (viewer) viewer.setImages(imagesFor(st)); renderJudge(st); }
+  if (step === 'judge') { if (viewer) viewer.setImages(imagesFor(st)); renderJudge(st); renderMade(st); }
   if (step === 'narrate' && viewer) viewer.setNarration(st.outputs.narration);
+}
+
+// "How it was made": numbers recounted from state.trace (+ judge output), never model summaries.
+function renderMade(st) {
+  if (!st.trace || !st.trace.length) return;
+  const report = buildReport(st);
+  show('made');
+  $('report-md').textContent = reportMarkdown(report);
+  const t = report.totals;
+  $('made-summary').innerHTML = `<b data-oh="calls">${t.calls}</b> calls · <b data-oh="retries">${t.retries}</b> retries · <b data-oh="failed">${t.failed}</b> failed · <b data-oh="redone">${t.photosRedone}</b> redone · judge mean <b data-oh="mean">${t.meanScore ?? '—'}</b>/5`;
+  if (viewer) viewer.setReport(report);
 }
 
 function imagesFor(st) {
@@ -115,6 +128,7 @@ function mountViewer(st) {
     narration: st.outputs.narration || null,
     images: imagesFor(st),
     order: st.inputs.photos.map((p) => p.id),
+    report: st.trace && st.trace.length ? buildReport(st) : null,
   });
 }
 
@@ -128,6 +142,7 @@ async function captureStops({ state: st }) {
 function finish() {
   renderJudge(state);
   renderNarration(state);
+  renderMade(state);
   show('actions');
   note(`run ${state.id} complete — ${state.archive.length ? `${state.archive.length} archived output(s) from re-run steps` : 'no re-runs'}`);
   window.__oh.done = true;
@@ -135,7 +150,7 @@ function finish() {
 function fail(e) {
   log(`ERROR: ${e.message}`);
   if (e.attempts) for (const a of e.attempts) log(`  attempt ${a.attempt}: ${a.errors.join('; ')}`);
-  if (e.state) { state = e.state; show('actions'); note(`the run stopped at "${e.step}". Fix the model or prompt, then resume from that step.`); }
+  if (e.state) { state = e.state; renderMade(state); show('actions'); note(`the run stopped at "${e.step}". Fix the model or prompt, then resume from that step.`); }
   window.__oh.error = e.message;
 }
 
@@ -182,6 +197,8 @@ $('btn-export').addEventListener('click', async () => {
   const built = await downloadTour(state, { title: 'Home tour' });
   note(`exported ${built.filename} (${(built.bytes / 1e6).toFixed(1)} MB, three.js ${built.inlined ? 'inlined' : 'from CDN'})`);
 });
+$('btn-trace').addEventListener('click', () => { const t = downloadTrace(state); note(`downloaded trace.json (${t.entries} entries)`); });
+$('btn-report').addEventListener('click', () => { downloadReport(state); note('downloaded report.md'); });
 $('btn-state').addEventListener('click', () => {
   const blob = new Blob([JSON.stringify(state)], { type: 'application/json' });
   const a = document.createElement('a');

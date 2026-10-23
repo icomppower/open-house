@@ -24,6 +24,7 @@ export async function run(ctx) {
     prompt: ctx.fill(tpl.user, vars),
     images: [],
     schemaName: 'narration',
+    promptName: 'narrate',
     check: (n) => checkNarration(n, spec),
   });
   ctx.state.steps[name].attempts = attempts;

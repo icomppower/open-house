@@ -55,12 +55,12 @@ export async function enhanceOne(ctx, photoId, { feedback = null, meta = {} } = 
     prompt: ctx.fill(tpl.user, vars),
     images: [prep.image],
     schemaName: 'enhance',
+    promptName: 'enhance',
     check: (p) => checkEnhance(p, photoId),
     meta: { photoId, ...meta },
   });
   const imagePrompt = composeImagePrompt(plan, ctx.textRule);
-  const blob = await ctx.callImage({ image: original.dataUrl, prompt: imagePrompt, meta: { step: name, photoId, ...meta } });
-  if (!blob || typeof blob.arrayBuffer !== 'function') throw new Error(`callImage for ${photoId} did not return a Blob`);
+  const blob = await ctx.image({ image: original.dataUrl, prompt: imagePrompt, meta: { step: name, photoId, ...meta }, promptFile: 'enhance.md' });
   const image = await ctx.blobToDataUrl(blob);
   return { photoId, plan, imagePrompt, image, planAttempts: attempts, createdAt: new Date().toISOString(), redo: Boolean(feedback) };
 }

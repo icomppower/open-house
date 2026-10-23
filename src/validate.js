@@ -1,7 +1,10 @@
 // Schema checks (a small JSON Schema subset, no dependencies) and plan checks.
 // Every function returns an array of { path, message }; empty means valid.
 
+import { MATERIAL_KEYS, FURNITURE_KEYS, ENVIRONMENT_KEYS, furniture as FURNITURE, footprintBox } from './viewer/catalog.js';
+
 const EPS = 1e-6;
+export const FURNITURE_OVERLAP_MAX = 0.2; // fraction of the smaller footprint
 
 // ---------------------------------------------------------------- JSON Schema
 
@@ -156,13 +159,17 @@ function sharedEdge(a, wall, b) {
   return to - from > EPS ? { from, to } : null;
 }
 
+const listKeys = (keys) => keys.join(', ');
+const materialKeys = new Set(MATERIAL_KEYS);
+const furnitureKeys = new Set(FURNITURE_KEYS);
+const environmentKeys = new Set(ENVIRONMENT_KEYS);
+
 export function checkLayout(layout, spec) {
   const errors = [];
   const push = (path, message) => errors.push({ path, message });
   const levels = byId(layout.levels);
   const rooms = byId(layout.rooms);
   const specRooms = byId(spec.rooms);
-  const materials = new Set(spec.materials.map((m) => m.id));
   for (const d of dupes(layout.levels.map((l) => l.id))) push('$.levels', `duplicate level id "${d}"`);
   for (const d of dupes(layout.rooms.map((r) => r.id))) push('$.rooms', `duplicate room id "${d}"`);
   for (const d of dupes(layout.openings.map((o) => o.id))) push('$.openings', `duplicate opening id "${d}"`);
@@ -177,8 +184,9 @@ export function checkLayout(layout, spec) {
     if (x < fp.x - EPS || z < fp.z - EPS || x + w > fp.x + fp.w + EPS || z + d > fp.z + fp.d + EPS) {
       push(`${p}.rect`, `room "${r.id}" does not fit inside the footprint (${fp.w} x ${fp.d} m at ${fp.x},${fp.z})`);
     }
-    if (!materials.has(r.floor)) push(`${p}.floor`, `floor material "${r.floor}" is not in spec.materials`);
-    if (!materials.has(r.walls)) push(`${p}.walls`, `wall material "${r.walls}" is not in spec.materials`);
+    if (!materialKeys.has(r.floor)) push(`${p}.floor`, `floor material "${r.floor}" is not a catalog key; valid keys: ${listKeys(MATERIAL_KEYS)}`);
+    if (!materialKeys.has(r.walls)) push(`${p}.walls`, `wall material "${r.walls}" is not a catalog key; valid keys: ${listKeys(MATERIAL_KEYS)}`);
+    if (r.ceiling !== undefined && !materialKeys.has(r.ceiling)) push(`${p}.ceiling`, `ceiling material "${r.ceiling}" is not a catalog key; valid keys: ${listKeys(MATERIAL_KEYS)}`);
     const h = roomHeight(r, levels);
     if (h && h < 2) push(`${p}.ceilingHeight`, `room "${r.id}" is under 2 m tall`);
   });
@@ -263,6 +271,46 @@ export function checkLayout(layout, spec) {
   for (const ph of spec.photos) {
     const n = (cams[ph.id] || []).length;
     if (n !== 1) push('$.cameras', `photo "${ph.id}" has ${n} cameras; exactly one is required`);
+  }
+
+  if (layout.environment !== undefined && !environmentKeys.has(layout.environment)) {
+    push('$.environment', `environment "${layout.environment}" is not a catalog key; valid keys: ${listKeys(ENVIRONMENT_KEYS)}`);
+  }
+  errors.push(...checkFurniture(layout.furniture || [], rooms));
+  return errors;
+}
+
+// Furniture: catalog keys only, inside its room's rectangle, and no two floor-standing items
+// overlapping by more than FURNITURE_OVERLAP_MAX of the smaller footprint. Rugs lie under,
+// pendants hang above and tabletop items sit on other items, so those pairs are not checked.
+export function checkFurniture(items, rooms) {
+  const errors = [];
+  const push = (path, message) => errors.push({ path, message });
+  for (const d of dupes(items.map((f) => f.id))) push('$.furniture', `duplicate furniture id "${d}"`);
+  const boxes = [];
+  items.forEach((f, i) => {
+    const p = `$.furniture[${i}]`;
+    if (!furnitureKeys.has(f.item)) { push(`${p}.item`, `furniture "${f.item}" is not a catalog key; valid keys: ${listKeys(FURNITURE_KEYS)}`); return; }
+    if (f.material !== undefined && !materialKeys.has(f.material)) push(`${p}.material`, `material "${f.material}" is not a catalog key; valid keys: ${listKeys(MATERIAL_KEYS)}`);
+    const room = rooms[f.room];
+    if (!room) { push(`${p}.room`, `unknown room "${f.room}"`); return; }
+    const box = footprintBox(f.item, f.x, f.z, f.rotation || 0);
+    const { x, z, w, d } = room.rect;
+    if (box.x0 < x - 1e-3 || box.x1 > x + w + 1e-3 || box.z0 < z - 1e-3 || box.z1 > z + d + 1e-3) {
+      push(`${p}`, `"${f.id}" (${f.item}, ${box.w.toFixed(2)} x ${box.d.toFixed(2)} m at ${f.x},${f.z}) does not sit inside room "${f.room}" (x ${x}..${+(x + w).toFixed(2)}, z ${z}..${+(z + d).toFixed(2)})`);
+    }
+    boxes.push({ i, f, box, zone: FURNITURE[f.item].zone });
+  });
+  for (let a = 0; a < boxes.length; a++) {
+    for (let b = a + 1; b < boxes.length; b++) {
+      const A = boxes[a], B = boxes[b];
+      if (A.zone !== 'floor' || B.zone !== 'floor' || A.f.room !== B.f.room) continue;
+      const ox = Math.min(A.box.x1, B.box.x1) - Math.max(A.box.x0, B.box.x0);
+      const oz = Math.min(A.box.z1, B.box.z1) - Math.max(A.box.z0, B.box.z0);
+      if (ox <= EPS || oz <= EPS) continue;
+      const frac = (ox * oz) / Math.min(A.box.w * A.box.d, B.box.w * B.box.d);
+      if (frac > FURNITURE_OVERLAP_MAX) push(`$.furniture[${B.i}]`, `"${B.f.id}" overlaps "${A.f.id}" by ${Math.round(frac * 100)}% of the smaller footprint (max ${FURNITURE_OVERLAP_MAX * 100}%)`);
+    }
   }
   return errors;
 }

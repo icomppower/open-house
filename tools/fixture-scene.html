@@ -8,71 +8,32 @@
 <body>
 <div id="stage"></div>
 <script type="module">
-// Renders the sample house WITH simple furniture, from the recorded layout cameras.
-// tools/render-fixtures.mjs calls window.shoot() and saves the JPEGs into fixtures/photos/.
-import * as THREE from '../vendor/three.module.js';
+// Renders the sample house from the recorded layout (catalog materials + furniture) at the
+// recorded cameras. tools/render-fixtures.mjs calls window.shoot() and saves the JPEGs into
+// fixtures/photos/ as the six "phone photos".
 import { createViewer } from '../src/viewer/viewer.js';
 
 const layout = await (await fetch('../fixtures/mock/layout.json')).json();
 const spec = await (await fetch('../fixtures/mock/spec.json')).json();
-const viewer = createViewer({ container: document.getElementById('stage'), layout, spec, options: { sun: 'day', showControls: false, glideMs: 0 } });
-
-const lv = Object.fromEntries(layout.levels.map((l) => [l.id, l.elevation]));
-const g = new THREE.Group();
-viewer.scene.add(g);
-const mat = (c, r = 0.8) => new THREE.MeshStandardMaterial({ color: c, roughness: r });
-const box = (w, h, d, m, x, y, z) => { const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); mesh.position.set(x, y, z); mesh.castShadow = mesh.receiveShadow = true; g.add(mesh); return mesh; };
-const cyl = (r, h, m, x, y, z) => { const mesh = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 24), m); mesh.position.set(x, y, z); mesh.castShadow = mesh.receiveShadow = true; g.add(mesh); return mesh; };
-
-const fabric = mat(0x6f7b73), oak = mat(0xa87c4a, 0.6), walnut = mat(0x4a3324, 0.5), stone = mat(0xe9e4d8, 0.4), white = mat(0xf4f1ea, 0.7), dark = mat(0x222222, 0.5), linen = mat(0xece7dc, 0.9), brass = new THREE.MeshStandardMaterial({ color: 0xb08d57, roughness: 0.35, metalness: 0.8 });
-
-// living (0,0,5.5,4.5) ground
-let y = lv.ground;
-box(2.2, 0.42, 0.9, fabric, 2.9, y + 0.21, 3.3); box(2.2, 0.45, 0.25, fabric, 2.9, y + 0.6, 3.68); // sofa + back
-box(3.2, 0.015, 2.3, mat(0xb9ad9a, 1), 2.6, y + 0.008, 2.4); // rug
-box(1.1, 0.35, 0.6, oak, 2.6, y + 0.175, 2.2); // coffee table
-for (const ax of [1.1, 4.0]) { box(0.8, 0.42, 0.8, mat(0x8a6a4e), ax, y + 0.21, 1.3); box(0.8, 0.45, 0.2, mat(0x8a6a4e), ax, y + 0.6, 0.95); } // 2 armchairs
-cyl(0.03, 1.6, dark, 4.9, y + 0.8, 3.9); cyl(0.22, 0.3, linen, 4.9, y + 1.65, 3.9); // floor lamp
-// kitchen (5.5,0,4,4.5)
-box(2.4, 0.9, 1.0, walnut, 7.5, y + 0.45, 2.4); box(2.6, 0.05, 1.15, stone, 7.5, y + 0.925, 2.4); // island
-for (const sx of [6.7, 7.5, 8.3]) { cyl(0.18, 0.04, dark, sx, y + 0.7, 3.25); cyl(0.02, 0.68, dark, sx, y + 0.34, 3.25); } // 3 stools
-box(3.6, 0.88, 0.6, walnut, 7.5, y + 0.44, 0.42); box(3.7, 0.04, 0.65, stone, 7.5, y + 0.9, 0.42); // north counter
-for (const px of [7.0, 8.0]) { cyl(0.004, 0.7, dark, px, y + 2.35, 2.4); cyl(0.14, 0.18, brass, px, y + 1.95, 2.4); } // 2 pendants
-// hall (0,4.5,3,4.5)
-box(1.0, 0.8, 0.35, oak, 1.6, y + 0.4, 4.85); // console
-// study (3,4.5,6.5,4.5)
-box(1.8, 0.04, 0.7, oak, 7.4, y + 0.74, 7.7); for (const [lx, lz] of [[6.6, 7.4], [8.2, 7.4], [6.6, 8.0], [8.2, 8.0]]) box(0.04, 0.72, 0.04, dark, lx, y + 0.36, lz); // desk
-box(0.5, 0.45, 0.5, fabric, 7.4, y + 0.23, 6.9); box(0.5, 0.5, 0.08, fabric, 7.4, y + 0.7, 7.12); // chair
-box(1.6, 2.0, 0.3, walnut, 4.2, y + 1.0, 8.82); // bookshelf
-for (let i = 0; i < 4; i++) for (let j = 0; j < 7; j++) box(0.16, 0.26, 0.2, mat([0x7a3b2e, 0x3f5d4a, 0x2f3e5c, 0xb59a6a, 0x6b5b7b][(i + j) % 5]), 3.5 + j * 0.2, y + 0.33 + i * 0.47, 8.8); // books, no text
-// bedroom (0,0,5.5,4.5) upper
-y = lv.upper;
-box(1.7, 0.3, 2.1, oak, 2.75, y + 0.15, 2.3); box(1.7, 0.25, 2.0, linen, 2.75, y + 0.42, 2.3); box(1.7, 0.9, 0.08, oak, 2.75, y + 0.45, 3.4); // bed + headboard
-for (const nx of [1.65, 3.85]) { box(0.5, 0.5, 0.45, walnut, nx, y + 0.25, 3.3); cyl(0.12, 0.3, linen, nx, y + 0.65, 3.3); } // 2 nightstands + lamps
-box(1.2, 0.42, 0.4, fabric, 2.75, y + 0.21, 0.9); // bench
-// bath (5.5,0,4,4.5) upper
-box(1.7, 0.6, 0.75, white, 7.0, y + 0.3, 0.75); // tub
-box(0.9, 0.82, 0.5, walnut, 8.8, y + 0.41, 0.4); box(0.5, 0.12, 0.4, white, 8.8, y + 0.88, 0.4); // vanity + basin
-box(0.7, 0.9, 0.02, new THREE.MeshStandardMaterial({ color: 0x9fb2bf, roughness: 0.05, metalness: 0.9 }), 8.8, y + 1.7, 0.14); // mirror
+const params = new URLSearchParams(location.search);
+const viewer = createViewer({ container: document.getElementById('stage'), layout, spec, options: { sun: params.get('sun') || 'day', showControls: false, glideMs: 0, quality: 'high' } });
+window.__viewer = viewer;
 
 // A "phone photo" look: neutral daylight, slightly cool and flat, mild vignette, JPEG.
-window.shoot = async function shoot() {
+window.shoot = async function shoot({ grade = true } = {}) {
   const shots = await viewer.captureStops({ width: 1200, height: 900 });
   const out = [];
   for (const s of shots) {
     const img = new Image(); img.src = s.image; await img.decode();
     const c = document.createElement('canvas'); c.width = 1200; c.height = 900;
     const ctx = c.getContext('2d');
-    ctx.filter = 'saturate(0.86) contrast(0.96) brightness(1.02)';
-    ctx.drawImage(img, 0, 0);
-    ctx.filter = 'none';
-    ctx.globalCompositeOperation = 'multiply';
-    const vig = ctx.createRadialGradient(600, 450, 380, 600, 450, 820);
-    vig.addColorStop(0, '#ffffff'); vig.addColorStop(1, '#cfd3d8');
-    ctx.fillStyle = vig; ctx.fillRect(0, 0, 1200, 900);
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(120,150,200,0.05)'; ctx.fillRect(0, 0, 1200, 900);
-    out.push({ photoId: s.photoId, jpeg: c.toDataURL('image/jpeg', 0.84) });
+    if (grade) {
+      ctx.filter = 'saturate(0.88) contrast(0.97) brightness(1.02)';
+      ctx.drawImage(img, 0, 0);
+      ctx.filter = 'none';
+      ctx.fillStyle = 'rgba(120,150,200,0.05)'; ctx.fillRect(0, 0, 1200, 900);
+    } else ctx.drawImage(img, 0, 0);
+    out.push({ photoId: s.photoId, jpeg: c.toDataURL('image/jpeg', 0.8) });
   }
   return out;
 };

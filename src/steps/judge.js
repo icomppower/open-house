@@ -22,6 +22,7 @@ async function judgeImage(ctx, { promptName, photoId, kind, sourceImage, outputI
     prompt: ctx.fill(tpl.user, vars),
     images: [sourceImage, outputImage],
     schemaName: 'judge',
+    promptName,
     check: (v) => checkJudge(v, photoId, ctx.options.judgeThreshold),
     meta: { photoId, kind, ...meta },
   });
@@ -51,7 +52,7 @@ export async function run(ctx) {
       progress({ type: 'log', step: name, photoId: id, message: `${id} scored ${first.overall}/5 — redoing the enhance once` });
       const redo = await enhanceOne(ctx, id, { feedback: first.defects, meta: { attemptIndex: idx + 1, redo: true } });
       redos[id] = redo;
-      const second = await judgeImage(ctx, { promptName: 'judge', photoId: id, kind: 'enhance', sourceImage, outputImage: redo.image, meta: { target: 'redo', attemptIndex: idx + 1 } });
+      const second = await judgeImage(ctx, { promptName: 'judge', photoId: id, kind: 'enhance', sourceImage, outputImage: redo.image, meta: { target: 'redo', attemptIndex: idx + 1, redo: true } });
       verdicts.push({ target: { source: 'redo', index: idx + 1 }, ...second });
       // The better of the two is final; the harness only compares the judge's numbers.
       if (second.overall >= first.overall) final[id] = { source: 'redo', index: idx + 1, overall: second.overall };
