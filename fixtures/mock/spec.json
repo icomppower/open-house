@@ -1,0 +1,58 @@
+{
+  "summary": "A compact two-level home: an open living room with a full-height west glass wall flowing into a kitchen, a hall with the stair, a study at the back, and a bedroom with en-suite bathroom on the upper level.",
+  "rooms": [
+    { "id": "living", "name": "Living Room", "type": "living", "level": "ground", "floor": "oak_floor", "walls": "white_plaster", "features": ["full-height glass wall on the west side with black steel mullions", "wide open passage east into the kitchen", "door south to the hall"], "notes": "Seen in two photos from opposite ends." },
+    { "id": "kitchen", "name": "Kitchen", "type": "kitchen", "level": "ground", "floor": "terrazzo_floor", "walls": "white_plaster", "features": ["central island with stone top", "window over the north counter", "door south to the study"] },
+    { "id": "hall", "name": "Hall", "type": "hall", "level": "ground", "floor": "oak_floor", "walls": "white_plaster", "features": ["stair up to the bedroom level"], "notes": "Only glimpsed through the living-room door; stair visible." },
+    { "id": "study", "name": "Study", "type": "office", "level": "ground", "floor": "oak_floor", "walls": "white_plaster", "features": ["wide south window with a low sill", "desk under the window wall"] },
+    { "id": "bedroom", "name": "Bedroom", "type": "bedroom", "level": "upper", "floor": "oak_floor", "walls": "sage_plaster", "features": ["large west window", "door to the en-suite bathroom", "arrives from the stair"] },
+    { "id": "bath", "name": "Bathroom", "type": "bathroom", "level": "upper", "floor": "tile_floor", "walls": "tile_wall", "features": ["freestanding tub", "small high north window"] }
+  ],
+  "photos": [
+    { "id": "p1", "room": "living", "view": "From the kitchen side of the living room looking west at the full-height glass wall; sofa and two armchairs around a rug.", "facing": "w", "quality": "good" },
+    { "id": "p2", "room": "living", "view": "From beside the glass wall looking east across the living room into the open kitchen; hall door on the right.", "facing": "e", "quality": "good" },
+    { "id": "p3", "room": "kitchen", "view": "From the study door looking north-east across the island to the counter and window.", "facing": "ne", "quality": "good" },
+    { "id": "p4", "room": "study", "view": "From the hall door looking south-east toward the desk and the wide south window.", "facing": "se", "quality": "ok" },
+    { "id": "p5", "room": "bedroom", "view": "From the en-suite door looking west over the bed to the window.", "facing": "w", "quality": "good" },
+    { "id": "p6", "room": "bath", "view": "From the bedroom door looking north-west at the tub under the small window.", "facing": "nw", "quality": "ok" }
+  ],
+  "materials": [
+    { "id": "oak_floor", "name": "Oak plank floor", "where": "floor", "colour": "warm honey", "finish": "matte oiled", "rooms": ["living", "hall", "study", "bedroom"] },
+    { "id": "terrazzo_floor", "name": "Light grey terrazzo", "where": "floor", "colour": "pale grey with dark chips", "finish": "polished", "rooms": ["kitchen"] },
+    { "id": "tile_floor", "name": "Pale grey ceramic tile", "where": "floor", "colour": "pale grey", "finish": "matte", "rooms": ["bath"] },
+    { "id": "white_plaster", "name": "Warm white plaster", "where": "wall", "colour": "warm white", "finish": "matte", "rooms": ["living", "kitchen", "hall", "study"] },
+    { "id": "sage_plaster", "name": "Sage green plaster", "where": "wall", "colour": "muted sage", "finish": "matte", "rooms": ["bedroom"] },
+    { "id": "tile_wall", "name": "White square wall tile", "where": "wall", "colour": "white", "finish": "gloss", "rooms": ["bath"] },
+    { "id": "glass_steel", "name": "Clear glass in black steel frames", "where": "glass", "colour": "black frames", "finish": "powder-coated", "rooms": ["living", "kitchen", "study", "bedroom", "bath"] },
+    { "id": "walnut_cabinets", "name": "Walnut veneer cabinets", "where": "other", "colour": "dark brown", "finish": "satin", "rooms": ["kitchen"] },
+    { "id": "stone_counter", "name": "Pale stone counter", "where": "counter", "colour": "off-white", "finish": "honed", "rooms": ["kitchen"] }
+  ],
+  "objects": [
+    { "room": "living", "name": "sofa", "count": 1, "keep": true },
+    { "room": "living", "name": "armchair", "count": 2, "keep": true },
+    { "room": "living", "name": "coffee table", "count": 1, "keep": true },
+    { "room": "living", "name": "rug", "count": 1, "keep": true },
+    { "room": "living", "name": "floor lamp", "count": 1, "keep": true },
+    { "room": "kitchen", "name": "island", "count": 1, "keep": true },
+    { "room": "kitchen", "name": "bar stool", "count": 3, "keep": true },
+    { "room": "kitchen", "name": "pendant light", "count": 2, "keep": true },
+    { "room": "hall", "name": "console table", "count": 1, "keep": true },
+    { "room": "study", "name": "desk", "count": 1, "keep": true },
+    { "room": "study", "name": "desk chair", "count": 1, "keep": true },
+    { "room": "study", "name": "bookshelf", "count": 1, "keep": true, "notes": "spines visible; must not read as text in edits" },
+    { "room": "bedroom", "name": "bed", "count": 1, "keep": true },
+    { "room": "bedroom", "name": "nightstand", "count": 2, "keep": true },
+    { "room": "bedroom", "name": "bench", "count": 1, "keep": true },
+    { "room": "bath", "name": "freestanding tub", "count": 1, "keep": true },
+    { "room": "bath", "name": "basin", "count": 1, "keep": true },
+    { "room": "bath", "name": "mirror", "count": 1, "keep": true }
+  ],
+  "light": [
+    { "room": "living", "natural": "Strong direct light through the full-height west glass wall; late afternoon sun reaches well across the oak floor.", "fixtures": ["floor lamp"], "timeOfDay": "afternoon" },
+    { "room": "kitchen", "natural": "Diffuse north light from the counter window; borrowed light from the living room glass wall.", "fixtures": ["two pendant lights over the island"], "timeOfDay": "afternoon" },
+    { "room": "hall", "natural": "Indirect only, borrowed from the living room door.", "fixtures": ["ceiling light"], "timeOfDay": "unknown" },
+    { "room": "study", "natural": "Broad south light through the wide low window.", "fixtures": ["desk lamp"], "timeOfDay": "midday" },
+    { "room": "bedroom", "natural": "Direct west light through the large window in the afternoon.", "fixtures": ["two bedside lamps"], "timeOfDay": "afternoon" },
+    { "room": "bath", "natural": "Small amount of diffuse light from the high north window.", "fixtures": ["mirror light"], "timeOfDay": "unknown" }
+  ]
+}

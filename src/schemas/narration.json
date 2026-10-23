@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "open-house/narration",
+  "title": "narration.json — one realtor line per room",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["lines"],
+  "properties": {
+    "intro": { "type": "string", "maxLength": 240 },
+    "lines": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["room", "text"],
+        "properties": {
+          "room": { "type": "string", "minLength": 1 },
+          "text": { "type": "string", "minLength": 10, "maxLength": 240 }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "open-house/enhance",
+  "title": "enhance — the edit instruction the model writes for one photo",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["photoId", "editPrompt", "keep", "remove", "add", "negative"],
+  "properties": {
+    "photoId": { "type": "string", "minLength": 1 },
+    "editPrompt": { "type": "string", "minLength": 40, "maxLength": 2000 },
+    "keep": { "type": "array", "minItems": 1, "items": { "type": "string", "maxLength": 160 } },
+    "remove": { "type": "array", "items": { "type": "string", "maxLength": 160 } },
+    "add": { "type": "array", "items": { "type": "string", "maxLength": 160 } },
+    "negative": { "type": "array", "items": { "type": "string", "maxLength": 160 } },
+    "lighting": { "type": "string", "maxLength": 300 }
+  }
+}

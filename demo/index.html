@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>open-house demo</title>
+<style>
+  :root { color-scheme: dark; --bg: #141210; --card: #1f1c19; --line: #35302a; --fg: #f4efe6; --dim: #a79e91; --accent: #e3a35d; --ok: #7fbf7f; --warn: #e0b35a; --bad: #e07a6a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  header h1 { font-size: 22px; margin: 0; }
+  header p { margin: 4px 0 0; color: var(--dim); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-top: 14px; }
+  .card h2 { font-size: 16px; margin: 0 0 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .card h2 small { color: var(--dim); font-weight: 400; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  button, select, label.file { min-height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 10px; background: #2a2622; color: var(--fg); font: inherit; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; }
+  button.primary { background: var(--accent); color: #1a1816; border-color: var(--accent); }
+  button:disabled { opacity: .45; cursor: default; }
+  label.file input { display: none; }
+  .steps { display: flex; flex-wrap: wrap; gap: 6px; }
+  .step { padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); font-size: 13px; color: var(--dim); }
+  .step.running { border-color: var(--accent); color: var(--accent); }
+  .step.done { border-color: var(--ok); color: var(--ok); }
+  .step.error { border-color: var(--bad); color: var(--bad); }
+  .log { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--dim); max-height: 180px; overflow: auto; margin: 10px 0 0; padding: 8px; background: #151311; border-radius: 8px; white-space: pre-wrap; }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-top: 10px; }
+  .thumbs img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 8px; display: block; }
+  .thumbs figcaption { font-size: 11px; color: var(--dim); margin-top: 2px; }
+  .report { display: grid; gap: 12px; }
+  .pr { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .pr img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 8px; display: block; }
+  .pr .meta { grid-column: 1 / -1; font-size: 13px; }
+  .pr figcaption { font-size: 11px; color: var(--dim); }
+  .score { display: inline-block; min-width: 2.2em; text-align: center; padding: 1px 6px; border-radius: 6px; background: #2a2622; margin-right: 4px; font-variant-numeric: tabular-nums; }
+  .score.s5, .score.s4 { color: var(--ok); } .score.s3 { color: var(--warn); } .score.s2, .score.s1 { color: var(--bad); }
+  .badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; border: 1px solid var(--line); margin-left: 6px; }
+  .badge.redo { border-color: var(--warn); color: var(--warn); }
+  .badge.flag { border-color: var(--bad); color: var(--bad); }
+  .defects { margin: 4px 0 0; padding-left: 18px; color: var(--dim); }
+  .narr li { margin: 4px 0; }
+  .narr b { color: var(--accent); font-weight: 600; margin-right: 6px; }
+  .err { background: #3a1f1f; border-color: #7a3b3b; }
+  .hidden { display: none; }
+  @media (min-width: 720px) { .pr { grid-template-columns: 1fr 1fr 1fr; } .pr .meta { grid-column: auto; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>open-house</h1>
+    <p>Phone photos → walkable tour + photoreal edits. This demo runs offline with a <b>mock model</b>: every “decision” below is replayed from <code>fixtures/mock/</code>.</p>
+  </header>
+
+  <section class="card" id="input">
+    <h2>1 · Photos</h2>
+    <div class="row">
+      <button class="primary" id="btn-sample">Use the 6 sample photos</button>
+      <label class="file"><input type="file" id="file" accept="image/*" multiple>Upload your own…</label>
+      <select id="pace" title="mock pacing"><option value="0">fast</option><option value="350" selected>paced</option></select>
+    </div>
+    <p id="input-note" style="color:var(--dim);font-size:13px;margin:8px 0 0">Your own photos run through the same mock, so the spec and layout will describe the sample house, not yours. Plug in a real model to change that (see README).</p>
+    <div class="thumbs" id="thumbs"></div>
+  </section>
+
+  <section class="card hidden" id="progress">
+    <h2>2 · Run <small id="run-id"></small></h2>
+    <div class="steps" id="steps"></div>
+    <pre class="log" id="log"></pre>
+  </section>
+
+  <section class="card hidden" id="tour">
+    <h2>3 · Tour <small>drag to look · Photoreal shows the enhanced photo at each stop</small></h2>
+    <div id="viewer"></div>
+  </section>
+
+  <section class="card hidden" id="judge">
+    <h2>4 · Judge report <small id="judge-summary"></small></h2>
+    <div class="report" id="report"></div>
+  </section>
+
+  <section class="card hidden" id="narration">
+    <h2>5 · Narration</h2>
+    <p id="narr-intro" style="color:var(--dim)"></p>
+    <ul class="narr" id="narr-lines"></ul>
+  </section>
+
+  <section class="card hidden" id="actions">
+    <h2>6 · Export &amp; resume</h2>
+    <div class="row">
+      <button id="btn-export">Download tour (one HTML file)</button>
+      <button id="btn-state">Download run state (JSON)</button>
+      <select id="resume-step"><option value="enhance">enhance</option><option value="judge" selected>judge</option><option value="narrate">narrate</option></select>
+      <button id="btn-resume">Resume from step</button>
+      <label class="file"><input type="file" id="state-file" accept="application/json">Load a saved state…</label>
+    </div>
+    <p id="action-note" style="color:var(--dim);font-size:13px;margin:8px 0 0"></p>
+  </section>
+</div>
+<script type="module" src="./app.js"></script>
+</body>
+</html>

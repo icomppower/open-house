@@ -1,0 +1,77 @@
+{
+  "p1": [
+    {
+      "photoId": "p1",
+      "editPrompt": "Edit this photo of a living room looking west at a full-height glass wall. Keep every wall, the glass wall with its black steel mullions, the ceiling line, the oak floor and the exact camera position. Change the light to late golden hour: low warm sun coming through the glass wall, long soft shadows of the mullions across the oak floor, a gentle glow on the white walls. Tidy the room: remove loose items on the coffee table and any cables. Add a folded wool throw on the sofa, two cushions on the armchairs and a small plant on the coffee table. Keep the sofa, both armchairs, the rug and the floor lamp exactly where they are. The result must be a photograph, not a render. Nothing in the image may be readable: no text, logos, titles, brand marks or faces.",
+      "lighting": "Low sun from the west through the glass wall, warm 3000K, mullion shadows raking across the floor.",
+      "keep": ["glass wall with black steel mullions", "white plaster walls and ceiling line", "oak plank floor", "1 sofa, 2 armchairs, 1 coffee table, 1 rug, 1 floor lamp in place", "camera position and lens"],
+      "remove": ["loose items on the coffee table", "cables along the wall", "colour cast"],
+      "add": ["wool throw on the sofa", "two plain cushions", "small plant on the coffee table"],
+      "negative": ["extra windows or doors", "visible text or logos", "warped mullions", "render look"]
+    }
+  ],
+  "p2": [
+    {
+      "photoId": "p2",
+      "editPrompt": "Edit this photo of a living room looking east into an open kitchen. Keep the wide passage into the kitchen, the hall door on the right, the ceiling line, the oak floor changing to terrazzo at the kitchen, and the camera exactly as it is. Light it as golden hour: warm sun entering from behind the camera (the west glass wall), warming the far kitchen wall and casting soft long shadows of the furniture eastward. Declutter: clear the island surface except a single bowl, remove anything stuck to walls. Add a plain runner rug in the passage direction only if it fits the floor. Keep the sofa, armchairs, island and the three bar stools in place. Photographic result only. No readable text, logos, labels, titles or faces anywhere.",
+      "lighting": "Warm light from behind the camera (west), falling eastward onto the kitchen; soft long shadows.",
+      "keep": ["open passage to the kitchen", "hall door on the right", "oak floor and terrazzo threshold", "sofa, armchairs, island, 3 bar stools", "camera position and lens"],
+      "remove": ["items on the island", "wall clutter"],
+      "add": ["one fruit bowl on the island", "plain runner rug if it fits"],
+      "negative": ["new openings", "visible text or logos", "changed ceiling height"]
+    }
+  ],
+  "p3": [
+    {
+      "photoId": "p3",
+      "editPrompt": "Edit this photo of a kitchen looking across the island to the north counter and window. Keep the island, the walnut cabinets, the stone counter, the window over the counter, both pendant lights, the terrazzo floor and the camera unchanged. Golden hour: the north window gives cool diffuse light, while warm late sun spills in from the living room on the left and grazes the island top. Declutter the counter and island completely except one cutting board and a bowl. Keep all three bar stools. Add a small herb plant by the window. Must look like a photograph. No readable text, labels, logos or faces anywhere, including on appliances and packaging.",
+      "lighting": "Cool diffuse north light from the window, warm spill from the west living room on the left.",
+      "keep": ["island and 3 bar stools", "walnut cabinets and stone counter", "north window", "2 pendant lights", "terrazzo floor", "camera"],
+      "remove": ["small appliances and packaging on the counter", "fridge magnets or papers"],
+      "add": ["cutting board and bowl on the island", "small herb plant by the window"],
+      "negative": ["extra windows", "legible labels on appliances", "melted pendant shapes"]
+    }
+  ],
+  "p4": [
+    {
+      "photoId": "p4",
+      "editPrompt": "Edit this photo of a study looking toward the desk and the wide south window. Keep the window with its black mullions, the walls, the oak floor, the desk, chair and bookshelf and the camera exactly as they are. Golden hour: warm low light raking through the south window across the desk and floor. Tidy the desk to a lamp and a notebook. Blur or replace book spines with plain cloth-bound volumes so nothing is readable. Add a small plant on the desk. Photographic. No readable text, titles, logos or faces.",
+      "lighting": "Low warm light through the south window across the desk.",
+      "keep": ["south window with mullions", "desk, chair, bookshelf", "oak floor", "camera"],
+      "remove": ["papers and cables on the desk"],
+      "add": ["small plant on the desk"],
+      "negative": ["readable book titles", "extra window"]
+    },
+    {
+      "photoId": "p4",
+      "editPrompt": "Edit this photo of a study looking toward the desk and the wide south window. A previous edit was rejected because book spines stayed legible and the window gained an extra pane. Keep the south window exactly as photographed: same width, same three mullion divisions, same sill height. Keep the walls, the oak floor, the desk, the chair, the bookshelf and the camera unchanged. Replace every book spine with plain, unlettered cloth volumes in muted colours; no titles, no lettering of any kind. Golden hour: warm low light raking through the south window across the desk and floor, soft shadows. Tidy the desk to a lamp and a closed plain notebook and add a small plant. Photographic result. Absolutely no readable text, logos, titles or faces.",
+      "lighting": "Low warm light through the unchanged south window across the desk.",
+      "keep": ["south window: same width, same mullion count, same sill", "desk, chair, bookshelf in place", "oak floor and walls", "camera"],
+      "remove": ["all legible book spines", "papers and cables on the desk"],
+      "add": ["plain unlettered cloth volumes", "small plant on the desk"],
+      "negative": ["any lettering on books", "additional window pane or mullion", "changed window width"]
+    }
+  ],
+  "p5": [
+    {
+      "photoId": "p5",
+      "editPrompt": "Edit this photo of a bedroom looking west over the bed to a large window. Keep the window and its mullions, the sage green walls, the oak floor, the bed, both nightstands, the bench and the camera unchanged. Golden hour: warm low sun through the west window, lighting the bed and the far wall, soft mullion shadows on the floor. Make the bed neatly with plain white linen and a folded throw; remove anything on the nightstands except the two lamps. Add two plain cushions. Photographic. No readable text, logos, book titles or faces.",
+      "lighting": "Direct low west sun through the window onto the bed.",
+      "keep": ["west window and mullions", "sage green walls", "bed, 2 nightstands, bench", "oak floor", "camera"],
+      "remove": ["clutter on nightstands", "clothes on the bench"],
+      "add": ["plain white linen", "folded throw", "two plain cushions"],
+      "negative": ["extra window", "visible text", "changed wall colour"]
+    }
+  ],
+  "p6": [
+    {
+      "photoId": "p6",
+      "editPrompt": "Edit this photo of a bathroom looking toward a freestanding tub under a small high window. Keep the tub, the basin, the mirror, the white tiled walls, the pale tile floor, the small window and the camera unchanged. Golden hour: a soft warm patch of light from the small north-facing window on the tile, otherwise clean neutral daylight; no colour cast. Declutter: remove bottles and toiletries; leave one folded towel on the tub edge and a small plant on the windowsill. Photographic. No readable text or labels on anything, no logos, no faces in the mirror.",
+      "lighting": "Soft diffuse light from the small high window, slightly warm.",
+      "keep": ["freestanding tub, basin, mirror", "white tile walls and pale tile floor", "small high window", "camera"],
+      "remove": ["bottles and toiletries", "colour cast"],
+      "add": ["one folded towel", "small plant on the sill"],
+      "negative": ["labelled bottles", "faces in the mirror", "enlarged window"]
+    }
+  ]
+}

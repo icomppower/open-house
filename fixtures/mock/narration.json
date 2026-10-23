@@ -1,0 +1,11 @@
+{
+  "intro": "A compact two-level home built around light: a glass-walled living room, an open kitchen, a quiet study, and a bedroom suite upstairs.",
+  "lines": [
+    { "room": "living", "text": "The living room opens through a full-height glass wall to the west, so the late sun comes right across the oak floor." },
+    { "room": "kitchen", "text": "The kitchen flows straight off the living room, with a stone-topped island, walnut cabinets and a window over the counter." },
+    { "room": "hall", "text": "The hall takes you from the living room to the stair, with the study just through the door on the right." },
+    { "room": "study", "text": "The study sits at the back under a wide south window, with room for a desk and a full wall of shelves." },
+    { "room": "bedroom", "text": "Upstairs, the bedroom has sage green walls and a large west window that fills the room with afternoon light." },
+    { "room": "bath", "text": "The en-suite bathroom is tiled floor to ceiling, with a freestanding tub set under a small high window." }
+  ]
+}

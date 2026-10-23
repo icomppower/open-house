@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "open-house/judge",
+  "title": "judge — one independent verdict on one output image",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["photoId", "scores", "overall", "defects", "verdict"],
+  "$defs": {
+    "score": { "type": "integer", "minimum": 1, "maximum": 5 }
+  },
+  "properties": {
+    "photoId": { "type": "string", "minLength": 1 },
+    "kind": { "type": "string", "enum": ["enhance", "tour"] },
+    "scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["geometry", "nothingInvented", "textRule", "artifacts", "photoreal"],
+      "properties": {
+        "geometry": { "$ref": "#/$defs/score" },
+        "nothingInvented": { "$ref": "#/$defs/score" },
+        "textRule": { "$ref": "#/$defs/score" },
+        "artifacts": { "$ref": "#/$defs/score" },
+        "photoreal": { "$ref": "#/$defs/score" }
+      }
+    },
+    "overall": { "$ref": "#/$defs/score" },
+    "defects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "detail"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["geometry", "invented", "text", "artifact", "lighting", "material", "camera", "other"] },
+          "detail": { "type": "string", "minLength": 1, "maxLength": 300 },
+          "severity": { "type": "string", "enum": ["minor", "major"] }
+        }
+      }
+    },
+    "verdict": { "type": "string", "enum": ["pass", "redo"] },
+    "notes": { "type": "string", "maxLength": 600 }
+  }
+}

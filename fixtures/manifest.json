@@ -1,0 +1,11 @@
+{
+  "house": "sample split-level house, rendered fixtures (see tools/render-fixtures.mjs)",
+  "photos": [
+    { "id": "p1", "file": "photos/p1-living-west.jpg", "caption": "living room, looking west at the glass wall" },
+    { "id": "p2", "file": "photos/p2-living-east.jpg", "caption": "living room, looking east into the kitchen" },
+    { "id": "p3", "file": "photos/p3-kitchen.jpg", "caption": "kitchen, across the island to the north window" },
+    { "id": "p4", "file": "photos/p4-study.jpg", "caption": "study, toward the desk and south window" },
+    { "id": "p5", "file": "photos/p5-bedroom.jpg", "caption": "bedroom, toward the west window" },
+    { "id": "p6", "file": "photos/p6-bathroom.jpg", "caption": "bathroom, tub and north window" }
+  ]
+}

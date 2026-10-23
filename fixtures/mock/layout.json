@@ -1,0 +1,47 @@
+{
+  "units": "metres",
+  "footprint": { "x": 0, "z": 0, "w": 9.5, "d": 9 },
+  "levels": [
+    { "id": "ground", "name": "Ground floor", "elevation": 0, "height": 2.7 },
+    { "id": "upper", "name": "Upper floor", "elevation": 2.9, "height": 2.6 }
+  ],
+  "rooms": [
+    { "id": "living", "name": "Living Room", "level": "ground", "rect": { "x": 0, "z": 0, "w": 5.5, "d": 4.5 }, "floor": "oak_floor", "walls": "white_plaster" },
+    { "id": "kitchen", "name": "Kitchen", "level": "ground", "rect": { "x": 5.5, "z": 0, "w": 4, "d": 4.5 }, "floor": "terrazzo_floor", "walls": "white_plaster" },
+    { "id": "hall", "name": "Hall", "level": "ground", "rect": { "x": 0, "z": 4.5, "w": 3, "d": 4.5 }, "floor": "oak_floor", "walls": "white_plaster" },
+    { "id": "study", "name": "Study", "level": "ground", "rect": { "x": 3, "z": 4.5, "w": 6.5, "d": 4.5 }, "floor": "oak_floor", "walls": "white_plaster" },
+    { "id": "bedroom", "name": "Bedroom", "level": "upper", "rect": { "x": 0, "z": 0, "w": 5.5, "d": 4.5 }, "floor": "oak_floor", "walls": "sage_plaster" },
+    { "id": "bath", "name": "Bathroom", "level": "upper", "rect": { "x": 5.5, "z": 0, "w": 4, "d": 4.5 }, "floor": "tile_floor", "walls": "tile_wall" }
+  ],
+  "openings": [
+    { "id": "gw_living", "type": "glass_wall", "between": ["living", "exterior"], "wall": "w", "offset": 0, "width": 4.5, "height": 2.7, "sill": 0, "mullions": 4 },
+    { "id": "op_living_kitchen", "type": "opening", "between": ["living", "kitchen"], "wall": "e", "offset": 1.0, "width": 2.5, "height": 2.4, "sill": 0 },
+    { "id": "door_living_hall", "type": "door", "between": ["living", "hall"], "wall": "s", "offset": 1.2, "width": 0.9, "height": 2.1, "sill": 0 },
+    { "id": "door_kitchen_study", "type": "door", "between": ["kitchen", "study"], "wall": "s", "offset": 1.5, "width": 0.9, "height": 2.1, "sill": 0 },
+    { "id": "door_hall_study", "type": "door", "between": ["hall", "study"], "wall": "e", "offset": 1.6, "width": 0.9, "height": 2.1, "sill": 0 },
+    { "id": "win_kitchen", "type": "window", "between": ["kitchen", "exterior"], "wall": "n", "offset": 1.0, "width": 2.0, "height": 1.2, "sill": 0.95, "mullions": 2 },
+    { "id": "win_study", "type": "window", "between": ["study", "exterior"], "wall": "s", "offset": 2.0, "width": 2.4, "height": 1.6, "sill": 0.6, "mullions": 3 },
+    { "id": "win_bedroom", "type": "window", "between": ["bedroom", "exterior"], "wall": "w", "offset": 0.6, "width": 3.2, "height": 1.8, "sill": 0.5, "mullions": 3 },
+    { "id": "door_bed_bath", "type": "door", "between": ["bedroom", "bath"], "wall": "e", "offset": 1.2, "width": 0.8, "height": 2.1, "sill": 0 },
+    { "id": "win_bath", "type": "window", "between": ["bath", "exterior"], "wall": "n", "offset": 1.4, "width": 1.0, "height": 0.9, "sill": 1.3, "mullions": 1 },
+    { "id": "stair_hall_bedroom", "type": "stair", "between": ["hall", "bedroom"], "wall": "s", "offset": 0.3, "width": 1.0, "height": 2.7, "sill": 0 }
+  ],
+  "adjacency": [
+    ["living", "kitchen"],
+    ["living", "hall"],
+    ["kitchen", "study"],
+    ["hall", "study"],
+    ["bedroom", "bath"],
+    ["hall", "bedroom"]
+  ],
+  "cameras": [
+    { "photoId": "p1", "room": "living", "position": { "x": 4.8, "y": 1.5, "z": 2.6 }, "lookAt": { "x": 0.0, "y": 1.2, "z": 2.0 }, "fov": 70 },
+    { "photoId": "p2", "room": "living", "position": { "x": 0.7, "y": 1.5, "z": 2.2 }, "lookAt": { "x": 5.5, "y": 1.3, "z": 2.4 }, "fov": 70 },
+    { "photoId": "p3", "room": "kitchen", "position": { "x": 6.0, "y": 1.5, "z": 4.0 }, "lookAt": { "x": 8.6, "y": 1.1, "z": 0.6 }, "fov": 70 },
+    { "photoId": "p4", "room": "study", "position": { "x": 3.6, "y": 1.5, "z": 5.2 }, "lookAt": { "x": 8.0, "y": 1.1, "z": 8.4 }, "fov": 70 },
+    { "photoId": "p5", "room": "bedroom", "position": { "x": 5.1, "y": 4.4, "z": 3.6 }, "lookAt": { "x": 0.6, "y": 3.9, "z": 1.4 }, "fov": 70 },
+    { "photoId": "p6", "room": "bath", "position": { "x": 9.0, "y": 4.4, "z": 4.0 }, "lookAt": { "x": 6.2, "y": 4.0, "z": 0.6 }, "fov": 70 }
+  ],
+  "sun": { "azimuth": 255, "elevation": 10 },
+  "notes": "West glass wall takes the late sun; upper level sits over the living room and kitchen."
+}

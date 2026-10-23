@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "open-house/spec",
+  "title": "spec.json — what is in the house, as read from the photos",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["rooms", "photos", "materials", "objects", "light"],
+  "properties": {
+    "summary": { "type": "string", "maxLength": 600 },
+    "rooms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "type"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "name": { "type": "string", "minLength": 1, "maxLength": 60 },
+          "type": {
+            "type": "string",
+            "enum": ["living", "kitchen", "dining", "bedroom", "bathroom", "office", "hall", "stair", "utility", "garage", "outdoor", "other"]
+          },
+          "level": { "type": "string", "maxLength": 40 },
+          "floor": { "type": "string" },
+          "walls": { "type": "string" },
+          "ceiling": { "type": "string" },
+          "features": { "type": "array", "items": { "type": "string", "maxLength": 120 } },
+          "notes": { "type": "string", "maxLength": 400 }
+        }
+      }
+    },
+    "photos": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "room", "view"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "room": { "type": "string" },
+          "view": { "type": "string", "minLength": 1, "maxLength": 300 },
+          "facing": { "type": "string", "enum": ["n", "ne", "e", "se", "s", "sw", "w", "nw", "unknown"] },
+          "quality": { "type": "string", "enum": ["good", "ok", "poor"] }
+        }
+      }
+    },
+    "materials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "where"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "where": { "type": "string", "enum": ["floor", "wall", "ceiling", "counter", "trim", "glass", "fixture", "other"] },
+          "colour": { "type": "string", "maxLength": 80 },
+          "finish": { "type": "string", "maxLength": 80 },
+          "rooms": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["room", "name", "count"],
+        "properties": {
+          "room": { "type": "string" },
+          "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "count": { "type": "integer", "minimum": 1, "maximum": 99 },
+          "keep": { "type": "boolean" },
+          "notes": { "type": "string", "maxLength": 200 }
+        }
+      }
+    },
+    "light": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["room", "natural", "fixtures"],
+        "properties": {
+          "room": { "type": "string" },
+          "natural": { "type": "string", "maxLength": 300 },
+          "fixtures": { "type": "array", "items": { "type": "string", "maxLength": 80 } },
+          "timeOfDay": { "type": "string", "enum": ["morning", "midday", "afternoon", "golden_hour", "night", "unknown"] }
+        }
+      }
+    }
+  }
+}

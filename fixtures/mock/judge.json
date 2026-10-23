@@ -1,0 +1,21 @@
+{
+  "p1": [
+    { "photoId": "p1", "scores": { "geometry": 5, "nothingInvented": 5, "textRule": 5, "artifacts": 4, "photoreal": 5 }, "overall": 5, "defects": [ { "kind": "artifact", "detail": "The mullion shadow nearest the camera is slightly softer than the others.", "severity": "minor" } ], "verdict": "pass" }
+  ],
+  "p2": [
+    { "photoId": "p2", "scores": { "geometry": 5, "nothingInvented": 4, "textRule": 5, "artifacts": 5, "photoreal": 4 }, "overall": 4, "defects": [ { "kind": "invented", "detail": "The runner rug added in the passage is slightly wider than the passage floor.", "severity": "minor" }, { "kind": "lighting", "detail": "Warm light on the far kitchen wall is a little stronger than the west glass wall would give at that distance.", "severity": "minor" } ], "verdict": "pass" }
+  ],
+  "p3": [
+    { "photoId": "p3", "scores": { "geometry": 5, "nothingInvented": 5, "textRule": 5, "artifacts": 5, "photoreal": 5 }, "overall": 5, "defects": [], "verdict": "pass" }
+  ],
+  "p4": [
+    { "photoId": "p4", "scores": { "geometry": 3, "nothingInvented": 3, "textRule": 2, "artifacts": 4, "photoreal": 4 }, "overall": 3, "defects": [ { "kind": "text", "detail": "Several book spines on the shelf still carry legible lettering.", "severity": "major" }, { "kind": "geometry", "detail": "The south window gained a fourth pane; the photo shows three divisions.", "severity": "major" } ], "verdict": "redo", "notes": "Redo required: text rule broken and window geometry changed." },
+    { "photoId": "p4", "scores": { "geometry": 5, "nothingInvented": 5, "textRule": 5, "artifacts": 4, "photoreal": 4 }, "overall": 4, "defects": [ { "kind": "artifact", "detail": "The cloth book volumes have a slightly uniform, repeated look.", "severity": "minor" } ], "verdict": "pass" }
+  ],
+  "p5": [
+    { "photoId": "p5", "scores": { "geometry": 5, "nothingInvented": 5, "textRule": 5, "artifacts": 5, "photoreal": 4 }, "overall": 5, "defects": [ { "kind": "lighting", "detail": "The sunlit patch on the bed is a touch brighter than the window size suggests.", "severity": "minor" } ], "verdict": "pass" }
+  ],
+  "p6": [
+    { "photoId": "p6", "scores": { "geometry": 5, "nothingInvented": 4, "textRule": 5, "artifacts": 4, "photoreal": 4 }, "overall": 4, "defects": [ { "kind": "invented", "detail": "The plant on the windowsill is large for the sill depth.", "severity": "minor" }, { "kind": "artifact", "detail": "Tile grout lines bend slightly near the tub edge.", "severity": "minor" } ], "verdict": "pass" }
+  ]
+}

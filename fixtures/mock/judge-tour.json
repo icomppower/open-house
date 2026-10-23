@@ -1,0 +1,8 @@
+{
+  "p1": [ { "photoId": "p1", "scores": { "geometry": 5, "nothingInvented": 5, "textRule": 5, "artifacts": 5, "photoreal": 4 }, "overall": 5, "defects": [ { "kind": "camera", "detail": "The render is framed slightly higher than the photo.", "severity": "minor" } ], "verdict": "pass" } ],
+  "p2": [ { "photoId": "p2", "scores": { "geometry": 5, "nothingInvented": 5, "textRule": 5, "artifacts": 5, "photoreal": 4 }, "overall": 4, "defects": [ { "kind": "camera", "detail": "The hall door appears a little further right than in the photo.", "severity": "minor" } ], "verdict": "pass" } ],
+  "p3": [ { "photoId": "p3", "scores": { "geometry": 4, "nothingInvented": 5, "textRule": 5, "artifacts": 5, "photoreal": 4 }, "overall": 4, "defects": [ { "kind": "geometry", "detail": "The north window reads slightly narrower than in the photo.", "severity": "minor" } ], "verdict": "pass" } ],
+  "p4": [ { "photoId": "p4", "scores": { "geometry": 5, "nothingInvented": 5, "textRule": 5, "artifacts": 5, "photoreal": 5 }, "overall": 5, "defects": [], "verdict": "pass" } ],
+  "p5": [ { "photoId": "p5", "scores": { "geometry": 5, "nothingInvented": 5, "textRule": 5, "artifacts": 5, "photoreal": 4 }, "overall": 5, "defects": [ { "kind": "camera", "detail": "Render looks a few degrees more to the left than the photo.", "severity": "minor" } ], "verdict": "pass" } ],
+  "p6": [ { "photoId": "p6", "scores": { "geometry": 4, "nothingInvented": 5, "textRule": 5, "artifacts": 5, "photoreal": 4 }, "overall": 4, "defects": [ { "kind": "geometry", "detail": "The window sill is slightly higher in the render than in the photo.", "severity": "minor" } ], "verdict": "pass" } ]
+}
