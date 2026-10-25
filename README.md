@@ -51,29 +51,36 @@ Press **Use the 6 sample photos**. The demo runs the whole pipeline against a mo
 
 ```js
 import { GoogleGenAI } from 'https://esm.sh/@google/genai@1';
-import { runHarness } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.1/src/harness.js';
-import { makeGeminiCallers } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.1/src/adapters/gemini.js';
+import { runHarness } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.2/src/harness.js';
+import { makeGeminiCallers } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.2/src/adapters/gemini.js';
 
 const ai = new GoogleGenAI({ apiKey: userSuppliedKey });
-const { callModel, callImage } = makeGeminiCallers({ ai, textModel: 'gemini-4-argon', imageModel: 'gemini-2.5-flash-image' });
+const { callModel, callImage } = makeGeminiCallers({
+  ai,
+  textModel: 'gemini-4-argon',
+  imageModel: ['gemini-3.1-flash-image', 'gemini-2.5-flash-image'],  // tried in order; a 404 falls through to the next
+  thinkingLevels: { layout: 'high', narrate: 'low' },                // Argon thinking is a level, not a budget
+  log: console.log,                                                  // transport retries + image-model fallbacks
+});
 const state = await runHarness({ photos: files, callModel, callImage, onProgress: console.log });
 ```
 
-Model ids are parameters on purpose: check the current list in AI Studio. The adapter follows the `@google/genai` v1 request shape (`generateContent` with `inlineData` parts, `systemInstruction`, `responseMimeType`, `responseModalities`); the offline tests don't exercise it. Anything else works too — write two async functions with the signatures above.
+Argon outputs text only, so every image edit goes to the separate `imageModel`. Argon ignores `temperature` / `topP` / `topK` and has no explicit caching, so the adapter sends neither. Transport errors (429, 5xx, network) are retried inside the adapter with backoff and never use up the harness's validation retries. Model ids are parameters on purpose: check the current list in AI Studio. The adapter follows the `@google/genai` v1 request shape (`generateContent` with `inlineData` parts, `systemInstruction`, `responseMimeType`, `responseModalities`); `test/adapter.test.js` covers it offline with a fake client. Anything else works too — write two async functions with the signatures above.
 
 ### Embed in an AI Studio app (10 lines)
 
 ```html
 <input id="photos" type="file" accept="image/*" multiple> <div id="tour"></div>
 <script type="module">
-import { runHarness, finalImageFor } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.1/src/harness.js';
-import { makeGeminiCallers } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.1/src/adapters/gemini.js';
-import { createViewer } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.1/src/viewer/viewer.js';
+import { runHarness, finalImageFor } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.2/src/harness.js';
+import { makeGeminiCallers } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.2/src/adapters/gemini.js';
+import { createViewer } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.2/src/viewer/viewer.js';
 import { GoogleGenAI } from 'https://esm.sh/@google/genai@1';
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });            // AI Studio injects this at build time
-const { callModel, callImage } = makeGeminiCallers({ ai, textModel: 'gemini-4-argon' });
-const photos = await new Promise((r) => photos.onchange = () => r([...photos.files]));
-const state = await runHarness({ photos, callModel, callImage, onProgress: (e) => console.log(e.type, e.step, e.message ?? '') });
+const { callModel, callImage } = makeGeminiCallers({ ai, textModel: 'gemini-4-argon', thinkingLevels: { layout: 'high' } });
+const input = document.getElementById('photos');
+const files = await new Promise((r) => input.onchange = () => r([...input.files]));
+const state = await runHarness({ photos: files, callModel, callImage, onProgress: (e) => console.log(e.type, e.step, e.message ?? '') });
 createViewer({ container: tour, layout: state.outputs.layout, spec: state.outputs.spec, narration: state.outputs.narration,
   images: Object.fromEntries(state.inputs.photos.map((p) => [p.id, finalImageFor(state, p.id)])) });
 </script>

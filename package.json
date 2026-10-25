@@ -1,6 +1,6 @@
 {
   "name": "open-house",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Browser-only harness: phone photos of a home -> walkable three.js tour + photoreal edits. The harness is plumbing; the injected model makes every judgment.",
   "type": "module",
   "private": true,
