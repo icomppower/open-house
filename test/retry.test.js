@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { runHarness, HarnessError } from '../src/harness.js';
-import { samplePhotos, createMockCallers } from './helpers.js';
+import { samplePhotos, createMockCallers } from '../fixtures/helpers.js';
 
 test('bad JSON, then a schema failure, then a good answer: two retries with validator errors appended', async () => {
   const photos = await samplePhotos();

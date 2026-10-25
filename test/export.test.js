@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { runHarness, finalImageFor } from '../src/harness.js';
 import { buildTourHtml, tourData, traceJson, reportFiles } from '../src/export.js';
-import { samplePhotos, createMockCallers, fakeCaptureStops } from './helpers.js';
+import { samplePhotos, createMockCallers, fakeCaptureStops } from '../fixtures/helpers.js';
 
 test('export builds one self-contained HTML file with layout, images, viewer and three.js inlined', async () => {
   const photos = await samplePhotos();

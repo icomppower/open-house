@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { materials, furniture, environments, MATERIAL_KEYS, FURNITURE_KEYS, ENVIRONMENT_KEYS, footprintBox, describeCatalog } from '../src/viewer/catalog.js';
 import { loadSchema, loadPrompt, runHarness } from '../src/harness.js';
 import { validateSchema, checkLayout, checkFurniture, formatErrors } from '../src/validate.js';
-import { fixture, clone, samplePhotos, createMockCallers } from './helpers.js';
+import { fixture, clone, samplePhotos, createMockCallers } from '../fixtures/helpers.js';
 
 const has = (errors, text) => assert.ok(formatErrors(errors).some((e) => e.includes(text)), `expected "${text}" in:\n${formatErrors(errors).join('\n')}`);
 

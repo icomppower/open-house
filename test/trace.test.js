@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { runHarness } from '../src/harness.js';
 import { sha256Hex, sha256Bytes, summarize, SUMMARY_MAX } from '../src/trace.js';
 import { buildReport, reportMarkdown } from '../src/report.js';
-import { samplePhotos, createMockCallers, fakeCaptureStops, clone } from './helpers.js';
+import { samplePhotos, createMockCallers, fakeCaptureStops, clone } from '../fixtures/helpers.js';
 
 const HEX64 = /^[0-9a-f]{64}$/;
 const ISO = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/;

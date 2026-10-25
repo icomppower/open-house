@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { runHarness, OUTPUT_KEY, STEPS } from '../src/harness.js';
-import { samplePhotos, createMockCallers, fakeCaptureStops, clone } from './helpers.js';
+import { samplePhotos, createMockCallers, fakeCaptureStops, clone } from '../fixtures/helpers.js';
 
 test('inputs are frozen and byte-identical after a full run', async () => {
   const photos = await samplePhotos();

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { runHarness, STEPS } from '../src/harness.js';
-import { samplePhotos, createMockCallers, fakeCaptureStops, clone } from './helpers.js';
+import { samplePhotos, createMockCallers, fakeCaptureStops, clone } from '../fixtures/helpers.js';
 
 async function fullRun() {
   const photos = await samplePhotos();

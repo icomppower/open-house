@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { checkSpec, checkLayout, checkJudge, checkNarration, formatErrors } from '../src/validate.js';
-import { fixture, clone } from './helpers.js';
+import { fixture, clone } from '../fixtures/helpers.js';
 
 const PHOTO_IDS = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
 const has = (errors, text) => assert.ok(formatErrors(errors).some((e) => e.includes(text)), `expected "${text}" in:\n${formatErrors(errors).join('\n')}`);

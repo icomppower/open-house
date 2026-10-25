@@ -36,8 +36,11 @@ The viewer (`src/viewer/`) builds the house from `layout.json`: clean architectu
 
 ```sh
 git clone https://github.com/icomppower/open-house && cd open-house
+npm install
 npm test            # node tests: schemas, validators, catalog, trace, report, resume, retry-on-bad-JSON, never-overwrite, export
 npm run demo        # -> http://localhost:8765/demo/
+npx playwright install chromium   # first run: npx playwright install chromium
+npm run e2e         # headless browser e2e check (phone + desktop)
 ```
 
 Press **Use the 6 sample photos**. The demo runs the whole pipeline against a mock model that replays recorded answers from `fixtures/mock/` (one of them, `p4`, scores 3/5 on purpose so you can watch the judge force a redo). You get the furnished tour with the Photoreal toggle, the judge report, the narration, the **How it was made** numbers, a one-file export, `trace.json` / `report.md` downloads, and a resume-from-step control. ES modules don't load from `file://`, so use the little server (or any static server). On a slow phone add `?q=low` to the URL.
@@ -48,8 +51,8 @@ Press **Use the 6 sample photos**. The demo runs the whole pipeline against a mo
 
 ```js
 import { GoogleGenAI } from 'https://esm.sh/@google/genai@1';
-import { runHarness } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1/src/harness.js';
-import { makeGeminiCallers } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1/src/adapters/gemini.js';
+import { runHarness } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.1/src/harness.js';
+import { makeGeminiCallers } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.1/src/adapters/gemini.js';
 
 const ai = new GoogleGenAI({ apiKey: userSuppliedKey });
 const { callModel, callImage } = makeGeminiCallers({ ai, textModel: 'gemini-4-argon', imageModel: 'gemini-2.5-flash-image' });
@@ -63,9 +66,9 @@ Model ids are parameters on purpose: check the current list in AI Studio. The ad
 ```html
 <input id="photos" type="file" accept="image/*" multiple> <div id="tour"></div>
 <script type="module">
-import { runHarness, finalImageFor } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1/src/harness.js';
-import { makeGeminiCallers } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1/src/adapters/gemini.js';
-import { createViewer } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1/src/viewer/viewer.js';
+import { runHarness, finalImageFor } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.1/src/harness.js';
+import { makeGeminiCallers } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.1/src/adapters/gemini.js';
+import { createViewer } from 'https://cdn.jsdelivr.net/gh/icomppower/open-house@v1.1.1/src/viewer/viewer.js';
 import { GoogleGenAI } from 'https://esm.sh/@google/genai@1';
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });            // AI Studio injects this at build time
 const { callModel, callImage } = makeGeminiCallers({ ai, textModel: 'gemini-4-argon' });

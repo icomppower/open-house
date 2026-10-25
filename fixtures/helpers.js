@@ -1,4 +1,4 @@
-import { createMockCallers, loadSamplePhotos, loadText } from '../fixtures/mock.js';
+import { createMockCallers, loadSamplePhotos, loadText } from './mock.js';
 
 export { createMockCallers };
 

@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { loadSchema, parsePrompt, loadPrompt, fillTemplate } from '../src/harness.js';
 import { validateSchema, formatErrors } from '../src/validate.js';
-import { fixture, clone } from './helpers.js';
+import { fixture, clone } from '../fixtures/helpers.js';
 
 const SCHEMAS = ['spec', 'layout', 'enhance', 'judge', 'narration'];
 
